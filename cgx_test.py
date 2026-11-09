@@ -56,6 +56,9 @@ _c_lib.cgx_device_get.restype = _CgxDeviceGetResult
 _c_lib.pygxtestdeps_graph_runtime.argtypes = []
 _c_lib.pygxtestdeps_graph_runtime.restype = _CgxRuntimeNewResult
 
+_c_lib.pygx_wrap_py_object.argtypes = [ctypes.c_void_p]
+_c_lib.pygx_wrap_py_object.restype = ctypes.c_uint64
+
 
 class CgxTest(googletest.TestCase):
   BASIC_PACKAGE = "github.com/gx-org/gx/tests/bindings/basic"
@@ -447,18 +450,65 @@ class CgxTest(googletest.TestCase):
     self.assertEqual(got.float32_value(), 42)
 
   def testPyObjectWrapUnwrap(self):
-    runtime = pygxtesting.new_graph_runtime()
-    device = runtime.get_device(0)
     obj = {"hello": [1, 2, 3]}
     val = cgx.Value.from_object(obj)
     self.assertEqual(val.kind(), cgx.Kind.CGX_UNKNOWN)
     before_refs = sys.getrefcount(obj)
     self.assertIs(val.unwrap_pyobject(), obj)
     self.assertEqual(sys.getrefcount(obj), before_refs)
+
+  def testPyObjectWrapUnwrap_RepeatedUnwrapPreservesRefCount(self):
+    obj = {"hello": [1, 2, 3]}
+    val = cgx.Value.from_object(obj)
+    before_refs = sys.getrefcount(obj)
+    for _ in range(10):
+      unwrapped = val.unwrap_pyobject()
+      self.assertIs(unwrapped, obj)
+      del unwrapped
+    self.assertEqual(sys.getrefcount(obj), before_refs)
+
+  def testPyObjectWrapUnwrap_OutlivesValue(self):
+    obj = {"hello": [1, 2, 3]}
+    val = cgx.Value.from_object(obj)
+    unwrapped = val.unwrap_pyobject()
+    del val, obj
+    gc.collect()
+    cgx.run_go_gc()
+    self.assertEqual(unwrapped, {"hello": [1, 2, 3]})
+
+  def testPyObjectUnwrap_NonObjectValue(self):
+    runtime = pygxtesting.new_graph_runtime()
+    device = runtime.get_device(0)
+    val = cgx.Value.from_int64(device, 42)
+    with self.assertRaisesRegex(ValueError, "does not wrap a Python object"):
+      val.unwrap_pyobject()
+
+  def testPyObjectUnwrap_InvalidHandle(self):
+    with self.assertRaisesRegex(ValueError, "does not wrap a Python object"):
+      cgx.Value(0, owned=False).unwrap_pyobject()
+    val = cgx.Value.from_object({"hello": [1, 2, 3]})
+    stale = cgx.Value(val.handle, owned=False)
+    del val
+    gc.collect()
+    with self.assertRaisesRegex(ValueError, "does not wrap a Python object"):
+      stale.unwrap_pyobject()
+
+  def testPyObjectUnwrap_NilPyObject(self):
+    val = cgx.Value(_c_lib.pygx_wrap_py_object(None))
+    with self.assertRaisesRegex(ValueError, "wrapped Python object is nil"):
+      val.unwrap_pyobject()
+
+  def testValueFromPyObj_UnknownKind(self):
+    runtime = pygxtesting.new_graph_runtime()
+    device = runtime.get_device(0)
     wrapped_int = cgx.value_from_pyobj(device, 42, cgx.Kind.CGX_UNKNOWN)
     self.assertEqual(wrapped_int.unwrap_pyobject(), 42)
     wrapped_none = cgx.value_from_pyobj(device, None, cgx.Kind.CGX_UNKNOWN)
     self.assertIsNone(wrapped_none.unwrap_pyobject())
+
+  def testValueFromPyObj_NoneAsDynamicDim(self):
+    runtime = pygxtesting.new_graph_runtime()
+    device = runtime.get_device(0)
     none_int = cgx.value_from_pyobj(device, None, cgx.Kind.CGX_INT)
     self.assertEqual(none_int.int64_value(), -1)
     none_list = cgx.value_from_pyobj(device, [None, 4], cgx.Kind.CGX_INT)

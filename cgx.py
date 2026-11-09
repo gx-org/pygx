@@ -421,9 +421,6 @@ _py_lib.pygx_unwrap_py_object.restype = ctypes.py_object
 _py_lib.pygx_set_trace_callback.argtypes = [ctypes.py_object]
 _py_lib.pygx_set_trace_callback.restype = None
 
-_py_lib.Py_IncRef.argtypes = [ctypes.py_object]
-_py_lib.Py_IncRef.restype = None
-
 
 def from_heap_cstring(ptr: int) -> str:
   """Converts a heap-allocated C string to a Python str and frees the pointer."""
@@ -893,9 +890,12 @@ class Value(Handle):
     )
 
   def unwrap_pyobject(self) -> Any:
-    obj = _py_lib.pygx_unwrap_py_object(self._handle)
-    _py_lib.Py_IncRef(obj)
-    return obj
+    """Returns the Python object wrapped by this GX value.
+
+    Raises:
+      ValueError: If this value does not wrap a live Python object.
+    """
+    return _py_lib.pygx_unwrap_py_object(self._handle)
 
   def to_ndarray(self) -> np.ndarray:
     shape = self.shape()

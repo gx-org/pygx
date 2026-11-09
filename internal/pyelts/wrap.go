@@ -16,6 +16,14 @@ package pyelts
 
 // #include "Python.h"
 // #include "third_party/gxlang/gx/golang/binder/cgx/cgx.h"
+//
+// static void setNotPyObjectError(void) {
+//   PyErr_SetString(PyExc_ValueError, "GX value does not wrap a Python object");
+// }
+//
+// static void setNilPyObjectError(void) {
+//   PyErr_SetString(PyExc_ValueError, "wrapped Python object is nil");
+// }
 import "C"
 
 import (
@@ -43,10 +51,29 @@ func pygx_wrap_py_object(cobj *C.PyObject) C.cgx_handle {
 	return C.cgx_handle(handle.Wrap(el))
 }
 
-// pygx_unwrap_py_object returns the original pyobject from the GX value.
+// pygx_unwrap_py_object returns a new reference to the original Python object
+// from the GX value, incrementing its reference count before returning. Callers
+// own the returned reference and must decrement it when done; they do not need
+// to increment the reference count themselves.
+//
+// If h does not refer to an Element with a non-nil Python object,
+// pygx_unwrap_py_object sets a Python ValueError and returns nil.
 //
 //export pygx_unwrap_py_object
 func pygx_unwrap_py_object(h C.cgx_handle) *C.PyObject {
-	el := handle.Unwrap[*Element](handle.Handle(h))
-	return (*C.PyObject)(el.PyObject().Ptr())
+	gil := gopy.EnsureGILState()
+	defer gopy.ReleaseGILState(gil)
+	el, ok := handle.TryUnwrap[*Element](handle.Handle(h))
+	if !ok || el == nil {
+		C.setNotPyObjectError()
+		return nil
+	}
+	pyObj := el.PyObject()
+	if pyObj == nil || pyObj.Ptr() == nil {
+		C.setNilPyObjectError()
+		return nil
+	}
+	cobj := (*C.PyObject)(pyObj.Ptr())
+	C.Py_IncRef(cobj)
+	return cobj
 }
