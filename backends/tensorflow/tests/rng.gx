@@ -1,0 +1,26 @@
+package gxtftests
+
+import "rand"
+
+// RandUint32 draws two consecutive arrays of random uint32 with a Philox generator.
+func RandUint32(seed [3]uint64) ([2][5]uint32, [2][5]uint32) {
+	rnd := rand.New(rand.NewPhilox(seed))
+	rnd, a := rnd.Uint32[[]int{2, 5}]()
+	_, b := rnd.Uint32[[]int{2, 5}]()
+	return a, b
+}
+
+// RandUint64 draws two consecutive arrays of random uint64 with a Philox generator.
+func RandUint64(seed [3]uint64) ([3]uint64, [3]uint64) {
+	rnd := rand.New(rand.NewPhilox(seed))
+	rnd, a := rnd.Uint64[[]int{3}]()
+	_, b := rnd.Uint64[[]int{3}]()
+	return a, b
+}
+
+// RandUint32FromSource draws an array of random uint32 with a generator seeded by a constant.
+func RandUint32FromSource() [2][5]uint32 {
+	rnd := rand.New(rand.NewSource(42))
+	_, a := rnd.Uint32[[]int{2, 5}]()
+	return a
+}

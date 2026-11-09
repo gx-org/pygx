@@ -1,0 +1,66 @@
+package gxtftests
+
+// Bitwise operators.
+//
+// The left operand is a constant so that the operators are computed by the backend
+// (and not by the operators of the Python object).
+
+// BitwiseAndUint32 returns {0, 5, 3, 14} & y.
+func BitwiseAndUint32(y [4]uint32) [4]uint32 {
+	return [4]uint32{0, 5, 3, 14} & y
+}
+
+// BitwiseAndUint64 returns {0, 5, 3, 14} & y.
+func BitwiseAndUint64(y [4]uint64) [4]uint64 {
+	return [4]uint64{0, 5, 3, 14} & y
+}
+
+// BitwiseOrUint32 returns {0, 5, 3, 14} | y.
+func BitwiseOrUint32(y [4]uint32) [4]uint32 {
+	return [4]uint32{0, 5, 3, 14} | y
+}
+
+// BitwiseOrUint64 returns {0, 5, 3, 14} | y.
+func BitwiseOrUint64(y [4]uint64) [4]uint64 {
+	return [4]uint64{0, 5, 3, 14} | y
+}
+
+// BitwiseXorUint32 returns {0, 5, 3, 14} ^ y.
+func BitwiseXorUint32(y [4]uint32) [4]uint32 {
+	return [4]uint32{0, 5, 3, 14} ^ y
+}
+
+// BitwiseXorUint64 returns {0, 5, 3, 14} ^ y.
+func BitwiseXorUint64(y [4]uint64) [4]uint64 {
+	return [4]uint64{0, 5, 3, 14} ^ y
+}
+
+// ShiftLeftUint32 returns {0, 5, 3, 14} << y.
+func ShiftLeftUint32(y [4]uint32) [4]uint32 {
+	return [4]uint32{0, 5, 3, 14} << y
+}
+
+// ShiftLeftUint64 returns {0, 5, 3, 14} << y.
+func ShiftLeftUint64(y [4]uint64) [4]uint64 {
+	return [4]uint64{0, 5, 3, 14} << y
+}
+
+// ShiftRightLogicalUint32 returns {0, 5, 3, 14} >> y.
+func ShiftRightLogicalUint32(y [4]uint32) [4]uint32 {
+	return [4]uint32{0, 5, 3, 14} >> y
+}
+
+// ShiftRightLogicalUint64 returns {0, 5, 3, 14} >> y.
+func ShiftRightLogicalUint64(y [4]uint64) [4]uint64 {
+	return [4]uint64{0, 5, 3, 14} >> y
+}
+
+// ShiftRightArithmeticInt32 returns {-1, -5, -3, -14} >> y.
+func ShiftRightArithmeticInt32(y [4]int32) [4]int32 {
+	return [4]int32{-1, -5, -3, -14} >> y
+}
+
+// ShiftRightArithmeticInt64 returns {-1, -5, -3, -14} >> y.
+func ShiftRightArithmeticInt64(y [4]int64) [4]int64 {
+	return [4]int64{-1, -5, -3, -14} >> y
+}

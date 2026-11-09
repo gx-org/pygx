@@ -1,0 +1,17 @@
+// Package trace tests traces in Python.
+package trace
+
+func TraceInt32(a, b [2]int32) [2]int32 {
+	trace(a)
+	return b
+}
+
+func TraceFloat64(a, b [2]float64) [2]float64 {
+	trace(a)
+	return b
+}
+
+func TraceInt(b int) int {
+	trace("hello", b)
+	return b
+}

@@ -1,0 +1,23 @@
+package gxtftests
+
+import "shape"
+
+// ConcatAxis0 concatenates x and y along the first axis.
+func ConcatAxis0(x, y [4][4]float32) [8][4]float32 {
+	return shape.Concat[0](x, y)
+}
+
+// ConcatAxis1 concatenates x and y along the second axis.
+func ConcatAxis1(x, y [4][4]float32) [4][8]float32 {
+	return shape.Concat[1](x, y)
+}
+
+// Concat4D concatenates x and y along the third axis.
+func Concat4D(x [2][3][1][1]float32, y [2][3][4][1]float32) [2][3][5][1]float32 {
+	return shape.Concat[2](x, y)
+}
+
+// ConcatInt32 concatenates x and y along the first axis.
+func ConcatInt32(x, y [2][3]int32) [4][3]int32 {
+	return shape.Concat[0](x, y)
+}

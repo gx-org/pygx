@@ -1,0 +1,8 @@
+package gxtftests
+
+import "math"
+
+// AbsFloat32 returns the absolute value of x.
+func AbsFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return math.Abs(x)
+}

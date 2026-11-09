@@ -1,0 +1,6 @@
+package gxtftests
+
+// NegFloat32 returns -x.
+func NegFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return -x
+}

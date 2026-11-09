@@ -1,0 +1,6 @@
+package gxtftests
+
+// Lens returns the axis lengths of x.
+func Lens[Shape []int](x [Shape...]float32) []int {
+	return axlengths(x)
+}

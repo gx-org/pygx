@@ -1,0 +1,23 @@
+package gxtftests
+
+import "num"
+
+// Iota5 returns {0, 1, 2, 3, 4}.
+func Iota5() [5]int64 {
+	return num.Iota[[]int{5}, int64](0)
+}
+
+// Iota0 returns an empty array.
+func Iota0() [0]int64 {
+	return num.Iota[[]int{0}, int64](0)
+}
+
+// IotaAxis0 returns an array of shape [4][3] incremented along the first axis.
+func IotaAxis0() [4][3]int64 {
+	return num.Iota[[]int{4, 3}, int64](0)
+}
+
+// IotaAxis1 returns an array of shape [4][3] incremented along the second axis.
+func IotaAxis1() [4][3]int64 {
+	return num.Iota[[]int{4, 3}, int64](1)
+}

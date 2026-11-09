@@ -1,0 +1,14 @@
+package gxtftests
+
+// SubFloat32 returns x-y.
+//
+// 0 is first added to x so that the subtraction is computed by the backend
+// (and not by the operators of the Python object).
+func SubFloat32[Shape []int](x, y [Shape...]float32) [Shape...]float32 {
+	return (0 + x) - y
+}
+
+// SubFromOneFloat32 returns 1-x.
+func SubFromOneFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return 1 - x
+}

@@ -1,0 +1,47 @@
+package gxtftests
+
+import (
+	"dtype"
+	"math"
+	"py"
+)
+
+func ID(x py.Obj) py.Obj {
+	return x
+}
+
+func IDFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return x
+}
+
+func Add(x, y py.Obj) py.Obj {
+	return x + y
+}
+
+func AddFloat32[Shape []int](x, y [Shape...]float32) [Shape...]float32 {
+	return x + y
+}
+
+func AddOneFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return 1 + x
+}
+
+func AddFloat32One[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return x + 1
+}
+
+func AddFloat32Expr[Shape []int](x, y [Shape...]float32) [Shape...]float32 {
+	return x + (1 + y)
+}
+
+func AddLen[N int](x [N]float32) [N]float32 {
+	return float32(N) + x
+}
+
+func DivFloat32[Shape []int](x, y [Shape...]float32) [Shape...]float32 {
+	return x / y
+}
+
+func Sigmoid[Shape []int](logit [Shape...]float32) [Shape...]float32 {
+	return 1 / (1 + math.Exp(-logit))
+}

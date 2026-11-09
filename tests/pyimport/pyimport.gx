@@ -1,0 +1,7 @@
+package pyimport
+
+import "runtime:python/github.com/gx-org/pygx/tests/holder"
+
+func SetValue(h any, n int) {
+	holder.set_value(h, n)
+}

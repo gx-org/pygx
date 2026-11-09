@@ -1,0 +1,23 @@
+package pyobjects
+
+func Same(obj any) any {
+	return obj
+}
+
+func setValue(obj any, v float32)
+
+func SetValue(obj any, v float32) {
+	setValue(obj, v)
+}
+
+func callWithEmptyBytes(fn any)
+
+func CallWithEmptyBytes(fn any) {
+	callWithEmptyBytes(fn)
+}
+
+func callWithNilBytes(fn any)
+
+func CallWithNilBytes(fn any) {
+	callWithNilBytes(fn)
+}

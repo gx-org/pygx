@@ -1,0 +1,14 @@
+package gxtftests
+
+// MulFloat32 returns x*y.
+//
+// 0 is first added to x so that the multiplication is computed by the backend
+// (and not by the operators of the Python object).
+func MulFloat32[Shape []int](x, y [Shape...]float32) [Shape...]float32 {
+	return (0 + x) * y
+}
+
+// MulTwoFloat32 returns 2*x.
+func MulTwoFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return 2 * x
+}

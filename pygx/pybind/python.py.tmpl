@@ -1,0 +1,27 @@
+"""Bindings for GX module {{.PackagePath}}
+
+Automatically generated from pygx/pygx/pybind/python.py.tmpl
+
+Do not edit.
+"""
+
+from google3.third_party.gxlang.pygx import dyngx
+{{.Backend}}
+
+{{.Init}}
+
+__singleton = None
+
+def __package():
+  global __singleton
+  if __singleton is not None:
+    return __singleton
+  rtm = dyngx.default_runtime()
+  __singleton = dyngx.build_package(
+    rtm.device(0),
+    "google3/{{.PackagePath}}",
+  ) 
+  return __singleton
+
+def __getattr__(name: str):
+  return __package().__getattr__(name)

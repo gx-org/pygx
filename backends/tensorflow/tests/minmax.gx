@@ -1,0 +1,38 @@
+package gxtftests
+
+import "math"
+
+// MaxFloat32 returns the element-wise maximum of x and y.
+func MaxFloat32(x, y [1][3][2]float32) [1][3][2]float32 {
+	return math.Max(x, y)
+}
+
+// MinFloat32 returns the element-wise minimum of x and y.
+func MinFloat32(x, y [1][3][2]float32) [1][3][2]float32 {
+	return math.Min(x, y)
+}
+
+// MaxNaNFloat32 returns the element-wise maximum of x and y.
+func MaxNaNFloat32(x, y [4]float32) [4]float32 {
+	return math.Max(x, y)
+}
+
+// MinNaNFloat32 returns the element-wise minimum of x and y.
+func MinNaNFloat32(x, y [4]float32) [4]float32 {
+	return math.Min(x, y)
+}
+
+// MaxScalarFloat32 returns the element-wise maximum of x and a scalar y.
+func MaxScalarFloat32(x [1][3][2]float32, y float32) [1][3][2]float32 {
+	return math.Max(x, y)
+}
+
+// MinScalarFloat32 returns the element-wise minimum of x and a scalar y.
+func MinScalarFloat32(x [1][3][2]float32, y float32) [1][3][2]float32 {
+	return math.Min(x, y)
+}
+
+// ClipFloat32 clips a scalar between 0 and 1 (as in Bernoulli.quantile).
+func ClipFloat32(x float32) float32 {
+	return math.Min(math.Max(x, 0), 1)
+}

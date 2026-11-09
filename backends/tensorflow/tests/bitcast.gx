@@ -1,0 +1,23 @@
+package gxtftests
+
+import "dtype"
+
+// ReinterpretFloat64ToInt64 reinterprets the bits of x as int64.
+func ReinterpretFloat64ToInt64(x [3][4]float64) [3][4]int64 {
+	return dtype.Reinterpret[int64, float64](x)
+}
+
+// ReinterpretInt64ToUint64 reinterprets the bits of x as uint64.
+func ReinterpretInt64ToUint64(x [3][4]int64) [3][4]uint64 {
+	return dtype.Reinterpret[uint64, int64](x)
+}
+
+// ReinterpretUint32ToFloat32 reinterprets the bits of x as float32 (as in rand.Float32).
+func ReinterpretUint32ToFloat32(x [4]uint32) [4]float32 {
+	return dtype.Reinterpret[float32, uint32](x)
+}
+
+// ReinterpretFloat32ToUint32 reinterprets the bits of x as uint32 (as in rand.Float32).
+func ReinterpretFloat32ToUint32(x [4]float32) [4]uint32 {
+	return dtype.Reinterpret[uint32, float32](x)
+}

@@ -1,0 +1,41 @@
+package gxtftests
+
+// Comparison operators.
+//
+// 0 is first added to x so that the comparisons are computed by the backend
+// (and not by the operators of the Python object).
+
+// LessFloat32 returns x < y.
+func LessFloat32[Shape []int](x, y [Shape...]float32) [Shape...]bool {
+	return (0 + x) < y
+}
+
+// LessEqualFloat32 returns x <= y.
+func LessEqualFloat32[Shape []int](x, y [Shape...]float32) [Shape...]bool {
+	return (0 + x) <= y
+}
+
+// GreaterFloat32 returns x > y.
+func GreaterFloat32[Shape []int](x, y [Shape...]float32) [Shape...]bool {
+	return (0 + x) > y
+}
+
+// GreaterEqualFloat32 returns x >= y.
+func GreaterEqualFloat32[Shape []int](x, y [Shape...]float32) [Shape...]bool {
+	return (0 + x) >= y
+}
+
+// EqualFloat32 returns x == y.
+func EqualFloat32[Shape []int](x, y [Shape...]float32) [Shape...]bool {
+	return (0 + x) == y
+}
+
+// NotEqualFloat32 returns x != y.
+func NotEqualFloat32[Shape []int](x, y [Shape...]float32) [Shape...]bool {
+	return (0 + x) != y
+}
+
+// GreaterEqualScalarFloat32 returns p >= x for a scalar p (as in Bernoulli.quantile).
+func GreaterEqualScalarFloat32[Shape []int](p float32, x [Shape...]float32) [Shape...]bool {
+	return (0 + p) >= x
+}

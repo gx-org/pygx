@@ -1,0 +1,16 @@
+package gxtftests
+
+// ReshapeFloat32To2x3 reshapes x from [1][6] to [2][3].
+func ReshapeFloat32To2x3(x [1][6]float32) [2][3]float32 {
+	return [2][3]float32(x)
+}
+
+// ReshapeFloat32To3x3x3 reshapes x from [1][27] to [3][3][3].
+func ReshapeFloat32To3x3x3(x [1][27]float32) [3][3][3]float32 {
+	return [3][3][3]float32(x)
+}
+
+// ReshapeFloat32To6 flattens x from [2][3] to [6].
+func ReshapeFloat32To6(x [2][3]float32) [6]float32 {
+	return [6]float32(x)
+}

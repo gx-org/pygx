@@ -1,0 +1,5 @@
+package py
+
+// Obj is a Python object.
+// Use any as a proxy which will be replace with a type of unknown kind.
+type Obj any

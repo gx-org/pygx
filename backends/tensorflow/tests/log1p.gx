@@ -1,0 +1,8 @@
+package gxtftests
+
+import "math"
+
+// Log1pFloat32 returns log(1+x).
+func Log1pFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return math.Log1p(x)
+}

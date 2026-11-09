@@ -1,0 +1,47 @@
+package gxtftests
+
+// Functions testing constants created by the TensorFlow backend.
+//
+// Constants are on the left of binary operators so that they are
+// created by the backend (see Function.Constant).
+
+// AddConstFloat64 adds a float64 scalar constant to x.
+func AddConstFloat64[Shape []int](x [Shape...]float64) [Shape...]float64 {
+	return 0.5 + x
+}
+
+// AddConstInt32 adds an int32 scalar constant to x.
+func AddConstInt32[Shape []int](x [Shape...]int32) [Shape...]int32 {
+	return 7 + x
+}
+
+// AddConstInt64 adds an int64 scalar constant to x.
+func AddConstInt64[Shape []int](x [Shape...]int64) [Shape...]int64 {
+	return 7 + x
+}
+
+// AddConstUint32 adds an uint32 scalar constant to x.
+func AddConstUint32[Shape []int](x [Shape...]uint32) [Shape...]uint32 {
+	return 7 + x
+}
+
+// AddConstUint64 adds an uint64 scalar constant to x.
+func AddConstUint64[Shape []int](x [Shape...]uint64) [Shape...]uint64 {
+	return 7 + x
+}
+
+// AddConstArrayFloat32 adds a float32 array constant to x.
+func AddConstArrayFloat32(x [2][3][5]float32) [2][3][5]float32 {
+	return [2][3][5]float32{
+		{{-15, -14, -13, -12, -11}, {-10, -9, -8, -7, -6}, {-5, -4, -3, -2, -1}},
+		{{0, 1, 2, 3, 4}, {5, 6, 7, 8, 9}, {10, 11, 12, 13, 14}},
+	} + x
+}
+
+// AddConstArrayInt64 adds an int64 array constant to x.
+func AddConstArrayInt64(x [2][3][5]int64) [2][3][5]int64 {
+	return [2][3][5]int64{
+		{{-15, -14, -13, -12, -11}, {-10, -9, -8, -7, -6}, {-5, -4, -3, -2, -1}},
+		{{0, 1, 2, 3, 4}, {5, 6, 7, 8, 9}, {10, 11, 12, 13, 14}},
+	} + x
+}

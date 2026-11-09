@@ -1,0 +1,18 @@
+package gxtftests
+
+import "shape"
+
+// GatherSimple gathers values of a 1-axis array.
+func GatherSimple(params [6]float32, indices [3][1]int) [3]float32 {
+	return shape.Gather(params, indices)
+}
+
+// GatherSlices gathers slices of a 2-axis array.
+func GatherSlices(params [6][2]float32, indices [3][1]int) [3][2]float32 {
+	return shape.Gather(params, indices)
+}
+
+// GatherHigherRank gathers values of a 5-axis array (as in Bernoulli.log_prob).
+func GatherHigherRank(params [10][20][5][1][17]float32, indices [2000][5]int) [2000]float32 {
+	return shape.Gather(params, indices)
+}

@@ -1,0 +1,27 @@
+package structs
+
+type SA struct {
+	A [2]int32
+	B SB
+}
+
+type SB struct {
+	B [3]float32
+}
+
+func New(x int32) SA {
+	return SA{
+		A: [2]int32{1, 2} + x,
+		B: SB{
+			B: [3]float32{3, 4, 5} + float32(x),
+		},
+	}
+}
+
+func NewWithArrays(x int32, y [2]int32) (int32, SA, [2]int32) {
+	return x, New(x), y + x
+}
+
+func Trace(sa SA) {
+	trace(sa)
+}

@@ -1,0 +1,8 @@
+package gxtftests
+
+import "math"
+
+// SqrtFloat32 returns the square root of x.
+func SqrtFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return math.Sqrt(x)
+}
