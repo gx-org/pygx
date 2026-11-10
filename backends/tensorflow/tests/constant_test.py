@@ -87,6 +87,10 @@ class TfConstantTest(tf.test.TestCase):
     self.assertEqual(result.dtype, tf.int64)
     self.assertAllEqual(result, _arange().astype(np.int64) + x)
 
+  def test_compeval_constant(self):
+    x = _normal().astype(np.float64)
+    self._test_scalar(gxtftests.AddCompEvalConstFloat64, x, x + np.float64(0.5))
+
 
 if __name__ == "__main__":
   absltest.main()

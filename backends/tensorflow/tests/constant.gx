@@ -45,3 +45,13 @@ func AddConstArrayInt64(x [2][3][5]int64) [2][3][5]int64 {
 		{{0, 1, 2, 3, 4}, {5, 6, 7, 8, 9}, {10, 11, 12, 13, 14}},
 	} + x
 }
+
+//gx:compeval
+func compEvalHalf() float64 {
+	return 0.5
+}
+
+// AddCompEvalConstFloat64 adds a compeval scalar constant to x.
+func AddCompEvalConstFloat64[Shape []int](x [Shape...]float64) [Shape...]float64 {
+	return compEvalHalf() + x
+}
