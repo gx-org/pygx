@@ -133,6 +133,55 @@ class _CgxValueNewResult(ctypes.Structure):
   ]
 
 
+class _CgxValueGetBoolResult(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_bool),
+      ("error", _CgxHandle),
+  ]
+
+
+class _CgxValueGetFloat32Result(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_float),
+      ("error", _CgxHandle),
+  ]
+
+
+class _CgxValueGetFloat64Result(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_double),
+      ("error", _CgxHandle),
+  ]
+
+
+class _CgxValueGetInt32Result(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_int32),
+      ("error", _CgxHandle),
+  ]
+
+
+class _CgxValueGetInt64Result(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_int64),
+      ("error", _CgxHandle),
+  ]
+
+
+class _CgxValueGetUint32Result(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_uint32),
+      ("error", _CgxHandle),
+  ]
+
+
+class _CgxValueGetUint64Result(ctypes.Structure):
+  _fields_ = [
+      ("value", ctypes.c_uint64),
+      ("error", _CgxHandle),
+  ]
+
+
 class _CgxValueHostBufferResult(ctypes.Structure):
   _fields_ = [
       ("buffer", _CgxHandle),
@@ -340,25 +389,25 @@ _c_lib.cgx_value_shape.argtypes = [_CgxHandle]
 _c_lib.cgx_value_shape.restype = _CgxHandle
 
 _c_lib.cgx_value_get_bool.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_bool.restype = ctypes.c_bool
+_c_lib.cgx_value_get_bool.restype = _CgxValueGetBoolResult
 
 _c_lib.cgx_value_get_float32.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_float32.restype = ctypes.c_float
+_c_lib.cgx_value_get_float32.restype = _CgxValueGetFloat32Result
 
 _c_lib.cgx_value_get_float64.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_float64.restype = ctypes.c_double
+_c_lib.cgx_value_get_float64.restype = _CgxValueGetFloat64Result
 
 _c_lib.cgx_value_get_int32.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_int32.restype = ctypes.c_int32
+_c_lib.cgx_value_get_int32.restype = _CgxValueGetInt32Result
 
 _c_lib.cgx_value_get_int64.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_int64.restype = ctypes.c_int64
+_c_lib.cgx_value_get_int64.restype = _CgxValueGetInt64Result
 
 _c_lib.cgx_value_get_uint32.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_uint32.restype = ctypes.c_uint32
+_c_lib.cgx_value_get_uint32.restype = _CgxValueGetUint32Result
 
 _c_lib.cgx_value_get_uint64.argtypes = [_CgxHandle]
-_c_lib.cgx_value_get_uint64.restype = ctypes.c_uint64
+_c_lib.cgx_value_get_uint64.restype = _CgxValueGetUint64Result
 
 _c_lib.cgx_value_host_buffer.argtypes = [_CgxHandle]
 _c_lib.cgx_value_host_buffer.restype = _CgxValueHostBufferResult
@@ -851,25 +900,25 @@ class Value(Handle):
     return Shape(sh)
 
   def bool_value(self) -> bool:
-    return _c_lib.cgx_value_get_bool(self._handle)
+    return _check_result(_c_lib.cgx_value_get_bool(self._handle)).value
 
   def float32_value(self) -> float:
-    return _c_lib.cgx_value_get_float32(self._handle)
+    return _check_result(_c_lib.cgx_value_get_float32(self._handle)).value
 
   def float64_value(self) -> float:
-    return _c_lib.cgx_value_get_float64(self._handle)
+    return _check_result(_c_lib.cgx_value_get_float64(self._handle)).value
 
   def int32_value(self) -> int:
-    return _c_lib.cgx_value_get_int32(self._handle)
+    return _check_result(_c_lib.cgx_value_get_int32(self._handle)).value
 
   def int64_value(self) -> int:
-    return _c_lib.cgx_value_get_int64(self._handle)
+    return _check_result(_c_lib.cgx_value_get_int64(self._handle)).value
 
   def uint32_value(self) -> int:
-    return _c_lib.cgx_value_get_uint32(self._handle)
+    return _check_result(_c_lib.cgx_value_get_uint32(self._handle)).value
 
   def uint64_value(self) -> int:
-    return _c_lib.cgx_value_get_uint64(self._handle)
+    return _check_result(_c_lib.cgx_value_get_uint64(self._handle)).value
 
   def get_type(self, package: Package) -> Type:
     return Type(

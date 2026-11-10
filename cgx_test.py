@@ -544,6 +544,38 @@ class CgxTest(googletest.TestCase):
       fn.run([cgx.Value.from_int64(device, 42)])
     self.assertEqual(mock_print.call_count, 2)
 
+  def testValueGet_Errors(self):
+    runtime = pygxtesting.new_graph_runtime()
+    device = runtime.get_device(0)
+    package = device.build_package(self.BASIC_PACKAGE)
+    gc.collect()
+    before = cgx.handle_count()
+
+    struct_value = package.find_function("New").run([]).return_values()[0]
+    with self.assertRaisesRegex(
+        RuntimeError,
+        r"cannot convert \*elements\.NamedType to \*hostio\.DeviceArray",
+    ):
+      struct_value.int32_value()
+
+    py_value = cgx.Value.from_object({"hello": 1})
+    with self.assertRaisesRegex(RuntimeError, "cannot convert"):
+      py_value.int32_value()
+
+    f32_value = cgx.Value.from_float32(device, 4.2)
+    with self.assertRaisesRegex(RuntimeError, "want scalar of type Int32"):
+      f32_value.int32_value()
+
+    arr_value = cgx.Value.from_ndarray(
+        device, np.array([1.0, 2.0], dtype=np.float32)
+    )
+    with self.assertRaisesRegex(RuntimeError, "want scalar of type Float32"):
+      arr_value.float32_value()
+
+    del struct_value, py_value, f32_value, arr_value
+    gc.collect()
+    self.assertEqual(cgx.handle_count(), before)
+
   def testHandleRelease(self):
     runtime = pygxtesting.new_graph_runtime()
     device = runtime.get_device(0)
