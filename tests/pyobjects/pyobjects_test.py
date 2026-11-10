@@ -1,10 +1,12 @@
 """Test GX dynamic bindings."""
 
+import sys
 import threading
 import traceback
 from unittest import mock
 
 from google3.testing.pybase import googletest
+from google3.third_party.gxlang.pygx import cgx
 from google3.third_party.gxlang.pygx import dyngx
 from google3.third_party.gxlang.pygx.testing import pygxtesting
 from google3.third_party.gxlang.pygx.tests.holder import holder
@@ -41,6 +43,40 @@ class PygxTest(googletest.TestCase):
     self._pyobjects.CallWithEmptyBytes(received.append)
     self._pyobjects.CallWithNilBytes(received.append)
     self.assertEqual(received, [b"", b""])
+
+  def testCallWithMapRefCount(self):
+    key = object()
+    val = object()
+    called = False
+
+    def callee(m):
+      nonlocal called
+      self.assertEqual(m, {key: val})
+      called = True
+
+    fn = self._pyobjects.build().find_function("CallWithMap")
+    callee_val = cgx.Value.from_object(callee)
+    key_val = cgx.Value.from_object(key)
+    val_val = cgx.Value.from_object(val)
+    before_key = sys.getrefcount(key)
+    before_val = sys.getrefcount(val)
+    fn.run([callee_val, key_val, val_val])
+    self.assertTrue(called)
+    self.assertEqual(sys.getrefcount(key), before_key)
+    self.assertEqual(sys.getrefcount(val), before_val)
+    self.assertIs(key_val.unwrap_pyobject(), key)
+    self.assertIs(val_val.unwrap_pyobject(), val)
+
+    bad_key = []
+    bad_key_val = cgx.Value.from_object(bad_key)
+    before_bad_key = sys.getrefcount(bad_key)
+    with self.assertRaisesRegex(RuntimeError, "unhashable type"):
+      self._pyobjects.build().find_function("CallWithMap").run(
+          [callee_val, bad_key_val, val_val]
+      )
+    self.assertEqual(sys.getrefcount(bad_key), before_bad_key)
+    self.assertEqual(sys.getrefcount(val), before_val)
+    self.assertIs(bad_key_val.unwrap_pyobject(), bad_key)
 
   def testSetValueErrorContainsTraceback(self):
     with self.assertRaises(RuntimeError) as ctx:

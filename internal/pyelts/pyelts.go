@@ -63,6 +63,19 @@ func NewE(obj *gopy.Object, err error) (*Element, error) {
 	return &Element{Obj: obj}, nil
 }
 
+// CastFrom casts x to *Element without taking a new reference to the underlying
+// Python object; callers must not call Finalize unless they own x.
+func CastFrom(x any) (*Element, error) {
+	el, err := cast.To[*Element](x)
+	if err != nil {
+		return nil, err
+	}
+	if el == nil || el.Obj == nil || el.Obj.Ptr() == nil {
+		return nil, fmt.Errorf("cannot use nil or finalized *Element")
+	}
+	return el, nil
+}
+
 // PyObject returns the Python hold by the element.
 func (el *Element) PyObject() *gopy.Object {
 	return el.Obj

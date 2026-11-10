@@ -94,6 +94,9 @@ func (obj *Object) Ptr() unsafe.Pointer {
 
 func (obj *Object) call(args ...any) (*Object, error) {
 	pArgs := C.PyTuple_New(C.long(len(args)))
+	if pArgs == nil {
+		return nil, getPythonError()
+	}
 	defer C.Py_DecRef(pArgs)
 	for i, arg := range args {
 		pArg, err := toCPyObject(arg)
@@ -105,9 +108,11 @@ func (obj *Object) call(args ...any) (*Object, error) {
 
 	pValue := C.PyObject_CallObject(obj.obj, pArgs)
 	if err := getPythonError(); err != nil {
+		C.Py_DecRef(pValue)
 		return nil, err
 	}
-	if pValue == nil || pValue == C.Py_None {
+	if pValue == C.Py_None {
+		C.Py_DecRef(pValue)
 		return nil, nil
 	}
 	return newObject(pValue), nil
@@ -261,9 +266,17 @@ func strToCPyObject(s string) *C.PyObject {
 	return C.PyUnicode_FromStringAndSize(cS, C.long(len(s)))
 }
 
-func toCPythonMap(o any) (*C.PyObject, error) {
+func toCPythonMap(o any) (_ *C.PyObject, err error) {
 	iter := reflect.ValueOf(o).MapRange()
 	dict := C.PyDict_New()
+	if dict == nil {
+		return nil, getPythonError()
+	}
+	defer func() {
+		if err != nil {
+			C.Py_DecRef(dict)
+		}
+	}()
 	for iter.Next() {
 		k := iter.Key().Interface()
 		pyK, err := toCPyObject(k)
@@ -273,19 +286,31 @@ func toCPythonMap(o any) (*C.PyObject, error) {
 		v := iter.Value().Interface()
 		pyV, err := toCPyObject(v)
 		if err != nil {
+			C.Py_DecRef(pyK)
 			return nil, err
 		}
-		if C.PyDict_SetItem(dict, pyK, pyV) != 0 {
+		rc := C.PyDict_SetItem(dict, pyK, pyV)
+		C.Py_DecRef(pyK)
+		C.Py_DecRef(pyV)
+		if rc != 0 {
 			return nil, getPythonError()
 		}
 	}
 	return dict, nil
 }
 
-func toCPythonList(o any) (*C.PyObject, error) {
+func toCPythonList(o any) (_ *C.PyObject, err error) {
 	v := reflect.ValueOf(o)
 	n := v.Len()
 	list := C.PyList_New(C.long(n))
+	if list == nil {
+		return nil, getPythonError()
+	}
+	defer func() {
+		if err != nil {
+			C.Py_DecRef(list)
+		}
+	}()
 	for i := range n {
 		pyElem, err := toCPyObject(v.Index(i).Interface())
 		if err != nil {
@@ -298,12 +323,26 @@ func toCPythonList(o any) (*C.PyObject, error) {
 	return list, nil
 }
 
-func toCPyObject(o any) (*C.PyObject, error) {
+func toCPyObject(o any) (pyObj *C.PyObject, err error) {
+	if o == nil {
+		return nil, errors.Errorf("cannot convert nil to a PyObject")
+	}
+	defer func() {
+		if err == nil && pyObj == nil {
+			err = getPythonError()
+		}
+	}()
 	switch t := o.(type) {
 	case *Object:
+		if t == nil || t.obj == nil {
+			return nil, errors.Errorf("cannot convert nil or finalized *Object to a PyObject")
+		}
 		C.Py_IncRef(t.obj)
 		return t.obj, nil
 	case *C.PyObject:
+		if t == nil {
+			return nil, errors.Errorf("cannot convert nil *C.PyObject to a PyObject")
+		}
 		C.Py_IncRef(t)
 		return t, nil
 	case bool:

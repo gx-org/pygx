@@ -23,7 +23,6 @@ import (
 	"github.com/gomlx/compute/dtypes"
 	"github.com/gomlx/compute/notimplemented"
 	"github.com/gomlx/compute/shapes"
-	"github.com/gx-org/gx/internal/base/cast"
 	"github.com/gx-org/pygx/internal/gopy"
 	"github.com/gx-org/pygx/internal/pyelts"
 )
@@ -104,7 +103,7 @@ func tfDTypeFromFlat(flat any) (*gopy.Object, error) {
 }
 
 func unaryOp(op string, x compute.Value) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
@@ -138,11 +137,11 @@ func (f *Function) Constant(flat any, dims ...int) (compute.Value, error) {
 }
 
 func binaryOp(attr string, x, y compute.Value) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
-	yEl, err := cast.To[*pyelts.Element](y)
+	yEl, err := pyelts.CastFrom(y)
 	if err != nil {
 		return nil, err
 	}
@@ -194,11 +193,11 @@ func (f *Function) Sqrt(x compute.Value) (compute.Value, error) {
 }
 
 func binaryMathOp(op string, x, y compute.Value) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
-	yEl, err := cast.To[*pyelts.Element](y)
+	yEl, err := pyelts.CastFrom(y)
 	if err != nil {
 		return nil, err
 	}
@@ -283,11 +282,11 @@ func (f *Function) GreaterOrEqualTotalOrder(lhs compute.Value, rhs compute.Value
 
 // Gather returns the Op that gathers slices from operand at the indices specified by startIndices.
 func (f *Function) Gather(operand, startIndices compute.Value, indexVectorAxis int, offsetOutputAxes, collapsedSliceAxes, startIndexMap, sliceSizes []int, indicesAreSorted bool) (compute.Value, error) {
-	opEl, err := cast.To[*pyelts.Element](operand)
+	opEl, err := pyelts.CastFrom(operand)
 	if err != nil {
 		return nil, err
 	}
-	indicesEl, err := cast.To[*pyelts.Element](startIndices)
+	indicesEl, err := pyelts.CastFrom(startIndices)
 	if err != nil {
 		return nil, err
 	}
@@ -361,7 +360,7 @@ func (f *Function) Iota(shape shapes.Shape, iotaAxis int) (compute.Value, error)
 func (f *Function) Concatenate(axis int, operands ...compute.Value) (compute.Value, error) {
 	values := make([]*gopy.Object, len(operands))
 	for i, op := range operands {
-		el, err := cast.To[*pyelts.Element](op)
+		el, err := pyelts.CastFrom(op)
 		if err != nil {
 			return nil, err
 		}
@@ -374,7 +373,7 @@ func (f *Function) Concatenate(axis int, operands ...compute.Value) (compute.Val
 // Total size cannot change, it's just a "reinterpretation" of the same flat data.
 // The dtype remains the same, see ConvertDType to actually convert the values.
 func (f *Function) Reshape(x compute.Value, dimensions ...int) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
@@ -383,7 +382,7 @@ func (f *Function) Reshape(x compute.Value, dimensions ...int) (compute.Value, e
 
 // ConvertDType of x to dtype.
 func (f *Function) ConvertDType(x compute.Value, dtype dtypes.DType) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
@@ -399,7 +398,7 @@ func (f *Function) RNGBitGenerator(state compute.Value, shape shapes.Shape) (new
 	if shape.IsDynamic() {
 		return nil, nil, errors.Errorf("RNGBitGenerator does not support dynamic shape %s", shape)
 	}
-	stateEl, err := cast.To[*pyelts.Element](state)
+	stateEl, err := pyelts.CastFrom(state)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -440,7 +439,7 @@ func (f *Function) RNGBitGenerator(state compute.Value, shape shapes.Shape) (new
 
 // BroadcastInDim broadcasts the operand to an output with the given shape.
 func (f *Function) BroadcastInDim(operand compute.Value, outputShape shapes.Shape, broadcastAxes []int) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](operand)
+	xEl, err := pyelts.CastFrom(operand)
 	if err != nil {
 		return nil, err
 	}
@@ -461,7 +460,7 @@ func (f *Function) BroadcastInDim(operand compute.Value, outputShape shapes.Shap
 
 // Bitcast performs an elementwise bitcast operation from a dtype to another dtype.
 func (f *Function) Bitcast(operand compute.Value, targetDType dtypes.DType) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](operand)
+	xEl, err := pyelts.CastFrom(operand)
 	if err != nil {
 		return nil, err
 	}
@@ -473,7 +472,7 @@ func (f *Function) Bitcast(operand compute.Value, targetDType dtypes.DType) (com
 }
 
 func unaryBitwiseOp(op string, x compute.Value) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
@@ -481,11 +480,11 @@ func unaryBitwiseOp(op string, x compute.Value) (compute.Value, error) {
 }
 
 func binaryBitwiseOp(op string, x, y compute.Value) (compute.Value, error) {
-	xEl, err := cast.To[*pyelts.Element](x)
+	xEl, err := pyelts.CastFrom(x)
 	if err != nil {
 		return nil, err
 	}
-	yEl, err := cast.To[*pyelts.Element](y)
+	yEl, err := pyelts.CastFrom(y)
 	if err != nil {
 		return nil, err
 	}

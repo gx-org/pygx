@@ -21,3 +21,9 @@ func callWithNilBytes(fn any)
 func CallWithNilBytes(fn any) {
 	callWithNilBytes(fn)
 }
+
+func callWithMap(fn any, k any, v any)
+
+func CallWithMap(fn any, k any, v any) {
+	callWithMap(fn, k, v)
+}

@@ -18,7 +18,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/gomlx/compute"
 	"github.com/gomlx/compute/shapes"
-	"github.com/gx-org/gx/internal/base/cast"
 	"github.com/gx-org/pygx/internal/pyelts"
 )
 
@@ -46,7 +45,7 @@ func (b *Builder) NewFunction(name string) (compute.Function, error) {
 
 // OpShape returns the shape of a computation Op.
 func (b *Builder) OpShape(op compute.Value) (shapes.Shape, error) {
-	obj, err := cast.To[*pyelts.Element](op)
+	obj, err := pyelts.CastFrom(op)
 	if err != nil {
 		return shapes.Invalid(), err
 	}
