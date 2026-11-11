@@ -1017,8 +1017,7 @@ class Runtime(Handle):
     Raises:
       ValueError: if handle is not a valid handle to a GX runtime.
     """
-    # cgx functions panic, which aborts the process, when given an invalid
-    # handle: check the handle before taking ownership of it.
+    # Check the handle before taking ownership of it.
     check_error(_c_lib.cgx_runtime_check(handle), ValueError)
     super().__init__(handle)
 
