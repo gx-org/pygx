@@ -22,6 +22,7 @@ import (
 	"github.com/gomlx/compute"
 	"github.com/gomlx/compute/shapes"
 	"github.com/gx-org/gx/api"
+	"github.com/gx-org/gx/api/hostio"
 	"github.com/gx-org/gx/build/builder"
 	"github.com/gx-org/gx/build/ir"
 	"github.com/gx-org/gx/interp/eagereval"
@@ -59,6 +60,8 @@ func (b *Backend) ToElement(val compute.Value, tp ir.Type) (eagereval.NumericalN
 	switch valT := val.(type) {
 	case *pyelts.Element:
 		return valT, nil
+	case *hostio.DeviceArray:
+		return b.ToElement(valT.Buffer(), tp)
 	case *Buffer:
 		return valT.toPythonElement(tp)
 	default:
