@@ -21,7 +21,7 @@ class PyStructsTest(googletest.TestCase):
   def testDir(self):
     sa = self._structs.New(5)
     self.assertIsInstance(sa, dyngx.Instance)
-    self.assertEqual(dir(sa), ["A", "B"])
+    self.assertEqual(dir(sa), ["A", "B", "GetA", "Step"])
     self.assertIsInstance(sa.B, dyngx.Instance)
     self.assertEqual(dir(sa.B), ["B"])
 
@@ -42,7 +42,7 @@ class PyStructsTest(googletest.TestCase):
     )
     self.assertEqual(scalar.to_host(), 5)
     self.assertIsInstance(sa, dyngx.Instance)
-    self.assertEqual(dir(sa), ["A", "B"])
+    self.assertEqual(dir(sa), ["A", "B", "GetA", "Step"])
     self.assertIsInstance(sa.B, dyngx.Instance)
     np.testing.assert_array_equal(
         sa.A.to_host(), np.array([6, 7], dtype=np.int32)
@@ -71,6 +71,37 @@ class PyStructsTest(googletest.TestCase):
 	B: DeviceArray{DeviceID: 0}: [3]float32{8, 9, 10},
 }""",
     )
+
+  def testStructInputs(self):
+    s = self._structs
+    sa, b2, b3 = s.New(5), s.NewBox2(), s.NewBox3()
+    np.testing.assert_array_equal(sa.GetA().to_host(), [6, 7])
+    stepped = sa.Step(3)
+    np.testing.assert_array_equal(stepped.GetA().to_host(), [9, 10])
+    np.testing.assert_array_equal(sa.GetA().to_host(), [6, 7])
+    np.testing.assert_array_equal(s.ReadA(sa).to_host(), [6, 7])
+    np.testing.assert_array_equal(s.AddToA(sa, [10, 20]).to_host(), [16, 27])
+    np.testing.assert_array_equal(s.ReadBox(2, b2).to_host(), [6, 7])
+    for compiled in (False, True):
+      for bad in (42, sa.A, sa, b3):
+        dyngx.clear_all_cache()
+        if compiled:
+          s.ReadBox(2, b2)
+        with self.assertRaisesRegex(RuntimeError, "cannot use") as ctx:
+          s.ReadBox(2, bad)
+        self.assertNotIn("internal error", str(ctx.exception))
+    read_a = s.build().find_function("ReadA")
+    read_a.run([sa.value])
+    with self.assertRaisesRegex(RuntimeError, "wrong number of arguments"):
+      read_a.run([])
+    sa_bad = s.New(5)
+    sa_bad.value.set_field("B", b2.value)
+    for compiled in (False, True):
+      dyngx.clear_all_cache()
+      if compiled:
+        s.ReadA(sa)
+      with self.assertRaisesRegex(RuntimeError, "cannot use"):
+        s.ReadA(sa_bad)
 
 
 if __name__ == "__main__":

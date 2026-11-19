@@ -25,3 +25,20 @@ func NewWithArrays(x int32, y [2]int32) (int32, SA, [2]int32) {
 func Trace(sa SA) {
 	trace(sa)
 }
+
+func (sa SA) GetA() [2]int32 {
+	return sa.A
+}
+
+func (sa SA) Step(x int32) SA {
+	sa.A = sa.A + x
+	return sa
+}
+
+func ReadA(sa SA) [2]int32 {
+	return sa.A
+}
+
+func AddToA(sa SA, x [2]int32) [2]int32 {
+	return sa.A + x
+}

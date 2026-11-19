@@ -1,0 +1,17 @@
+package structs
+
+type Box[N int] struct {
+	A [N]int32
+}
+
+func NewBox2() Box[2] {
+	return Box[2]{A: [2]int32{6, 7}}
+}
+
+func NewBox3() Box[3] {
+	return Box[3]{A: [3]int32{6, 7, 8}}
+}
+
+func ReadBox[N int](b Box[N]) [N]int32 {
+	return b.A
+}
