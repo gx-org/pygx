@@ -394,7 +394,10 @@ func (f *Function) ConvertDType(x compute.Value, dtype dtypes.DType) (compute.Va
 }
 
 // RNGBitGenerator generates the given shape filled with random bits using the Philox algorithm.
-func (f *Function) RNGBitGenerator(state compute.Value, shape shapes.Shape) (newState compute.Value, values compute.Value, err error) {
+func (f *Function) RNGBitGenerator(state compute.Value, shape shapes.Shape, algorithm compute.RNGAlgorithm) (newState compute.Value, values compute.Value, err error) {
+	if algorithm != compute.RNGDefault && algorithm != compute.RNGPhilox {
+		return nil, nil, errors.Wrapf(compute.ErrNotImplemented, "RNGBitGenerator algorithm %v not implemented for TensorFlow backend", algorithm)
+	}
 	if shape.IsDynamic() {
 		return nil, nil, errors.Errorf("RNGBitGenerator does not support dynamic shape %s", shape)
 	}
