@@ -182,6 +182,11 @@ func (f *Function) Log1p(x compute.Value) (compute.Value, error) {
 	return unaryOp("log1p", x)
 }
 
+// Logistic returns the element-wise expression 1/(1+exp(-x)). Also known as the Sigmoid function.
+func (f *Function) Logistic(x compute.Value) (compute.Value, error) {
+	return unaryOp("sigmoid", x)
+}
+
 // Neg returns the element-wise negation of x.
 func (f *Function) Neg(x compute.Value) (compute.Value, error) {
 	return unaryOp("negative", x)

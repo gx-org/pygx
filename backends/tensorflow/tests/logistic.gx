@@ -1,0 +1,18 @@
+package gxtftests
+
+import "math"
+
+// LogisticFloat32 returns 1/(1+exp(-x)).
+func LogisticFloat32[Shape []int](x [Shape...]float32) [Shape...]float32 {
+	return math.Logistic(x)
+}
+
+// LogisticFloat64 returns 1/(1+exp(-x)).
+func LogisticFloat64[Shape []int](x [Shape...]float64) [Shape...]float64 {
+	return math.Logistic(x)
+}
+
+// LogisticBFloat16 returns 1/(1+exp(-x)).
+func LogisticBFloat16[Shape []int](x [Shape...]bfloat16) [Shape...]bfloat16 {
+	return math.Logistic(x)
+}
