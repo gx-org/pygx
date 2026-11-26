@@ -180,7 +180,7 @@ func (el *Element) Call(env *engine.Env, call *ir.FuncCallExpr, genArgs, args []
 }
 
 // UnaryOp applies a unary operator on x.
-func (el *Element) UnaryOp(env *engine.Env, expr *ir.UnaryExpr) (engine.NumericalElement, error) {
+func (el *Element) UnaryOp(env *engine.Env, expr *ir.UnaryExpr, typ ir.Type) (engine.NumericalElement, error) {
 	switch expr.Src.Op {
 	case token.ADD:
 		return el, nil
