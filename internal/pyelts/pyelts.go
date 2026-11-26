@@ -227,7 +227,7 @@ var binaryMethods = map[token.Token]string{
 }
 
 // BinaryOp applies a binary operator to x and y.
-func (el *Element) BinaryOp(env *engine.Env, expr *ir.BinaryExpr, y engine.NumericalElement) (engine.NumericalElement, error) {
+func (el *Element) BinaryOp(env *engine.Env, expr *ir.BinaryExpr, y engine.NumericalElement, typ ir.Type) (engine.NumericalElement, error) {
 	if method, ok := binaryMethods[expr.Src.Op]; ok {
 		return el.call(env, method, y)
 	}
