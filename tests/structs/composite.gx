@@ -1,0 +1,45 @@
+package structs
+
+type Vec [2]int32
+
+type Composite struct {
+	Constant [2]int32
+	Dynamic  [2]int32
+	Nested   SB
+	Items    []int32
+}
+
+func NewVec(x int32) Vec {
+	return Vec([2]int32{1, 2} + x)
+}
+
+func PassVec(v Vec) Vec {
+	return v
+}
+
+func ReadItems(items []int32) int32 {
+	return items[0] + items[1]
+}
+
+func ReadFloats(items []float32) float32 {
+	return items[0]
+}
+
+func NewComposite(x int32) Composite {
+	return Composite{
+		Constant: [2]int32{1, 2},
+		Dynamic:  [2]int32{3, 4} + x,
+		Nested: SB{
+			B: [3]float32{5, 6, 7},
+		},
+		Items: []int32{10, x},
+	}
+}
+
+func (c Composite) Combine(delta int32) ([2]int32, [3]float32) {
+	return c.Constant + c.Dynamic + c.Items[0] + c.Items[1] + delta, c.Nested.B + float32(delta)
+}
+
+func ReadComposite(c Composite) ([2]int32, [3]float32, int32) {
+	return c.Constant + c.Dynamic, c.Nested.B, c.Items[0] + c.Items[1]
+}
