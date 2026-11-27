@@ -294,7 +294,7 @@ func (el *Element) Cast(env *engine.Env, expr ir.Expr, target ir.Type) (engine.N
 }
 
 // Reshape an element.
-func (el *Element) Reshape(env *engine.Env, expr ir.Expr, axisLengths []engine.NumericalElement) (engine.NumericalElement, error) {
+func (el *Element) Reshape(env *engine.Env, expr ir.Expr, axisLengths []engine.NumericalElement, typ ir.Type) (engine.NumericalElement, error) {
 	dims := make([]int, len(axisLengths))
 	for i, axisLength := range axisLengths {
 		var err error
